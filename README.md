@@ -48,11 +48,44 @@ PostgreSQL DB
 ## What do I need to set this up?
 
 1. Access to a Kubernetes cluster (or Docker) and a namespace for  'monitoring' or 'observability' ( you can decide what to call this )
-2. A deployment of Prometheus and Grafana into the named namespace above - I found a basic configuration that I got from Bibin Wilson's tutorials [here](https://devopscube.com/setup-prometheus-monitoring-on-kubernetes/) 
-3. Prometheus node exporter which can be pulled from [here](https://github.com/prometheus/node_exporter) I run this on the physical server which runs [microk8s](https://microk8s.io/).
-4. The PostgreSQL DB exporter & access to the Aqua PostgreSQL - obtained from [Prometheus's GitHub]()
+2. A deployment of Prometheus and Grafana into the namespace above - I used a basic configuration from Bibin Wilson's tutorials [here](https://devopscube.com/setup-prometheus-monitoring-on-kubernetes/) & [Grafana](https://github.com/bibinwilson/kubernetes-grafana). This is the basis of my configuration - if you are familiar with these components you can modify them at as you need.
+
+To make the data persistent from Prometheus and Grafana you will need to create Persistent Volume Claims within your cluster.
+In the deployment section, i have included the Kubernetes yaml files for everything.
+
+3. Prometheus node exporter which can be found [here](https://github.com/prometheus/node_exporter). 
+You should deploy this on the VM/hosts in your K8s cluster (if possible.) I deployed it onto my physical server which runs [microk8s](https://microk8s.io/). 
+
+4. The PostgreSQL DB exporter & access to the Aqua PostgreSQL - obtained from [Prometheus's GitHub](https://github.com/prometheus-community/postgres_exporter). Again, deployed into the namespace to connect to the K8s servicename or K8s ClusterIP/LoadBalancer IP's which expose the AquaDB (Scalock) and Aqua Audit DB(SLK_Audit)
 5. The Aquasec Prometheus endpoint token and FQDN for the Aquasec Console. i.e. https://aquasec-console-dev.mydomain.com
 6. Patience and coffee :) 
 
 # Deployment
+
+## Prometheus Exporters
+Firstly we will setup the exporters and check that the data is available for Prometheus to 'scrape'.
+
+Deploy the Node Exporter (where possible) on your VM/Worker nodes, and the PostgreSQL exporter for each instance of AquaDB.
+
+Where you are using a AWS RDS Postgres or Microsoft Azure PostgreSQL server for both Aqua DB's, you only need to deploy one PosgreSQL exporter.  
+
+
+### Docker
+
+Find out our Aqua DB's which are exposing port 5432
+
+If your Aqua namespace is not called aqua, change as required.
+
+```$ kubectl get svc -n aqua```
+
+# Connect to it
+docker run \
+  --net=host \
+  -e DATA_SOURCE_NAME="postgresql://postgres:password@localhost:5432/postgres?sslmode=disable" \
+  quay.io/prometheuscommunity/postgres-exporter
+### Kubernetes
+
+# << Command yaml to deploy pods/containers >>
+
+``` $ kubectl create -f postgresql-exporter ```
 
