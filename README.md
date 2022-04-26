@@ -77,15 +77,15 @@ You can deploy the exporter using Docker via the command below.
 - Modify the password string to the literal password used to connect to the Postgres DB used for Aquasec when Aqua was deployed. 
 - Where the DB is not hosted locally, modify that host to the FQDN/reachable IP of the DB instance.
 
-```docker run \```
+```$ docker run \```
 ```--net=host \```
-```-e DATA_SOURCE_NAME="postgresql://postgres:password@localhost:5432/postgres?sslmode=disable" \ ```
+```-e DATA_SOURCE_NAME="postgresql://postgres:<YourPG_DB_password>@<AquaDbFQDN>:5432/postgres?sslmode=disable" \ ```
 ```quay.io/prometheuscommunity/postgres-exporter```
 
-
+SSL mode can be modified if you're db uses Mutual TLS.  The exporter provides parameters that support this 
 ### Kubernetes
 
-Find out our Aqua DB's which are exposing port 5432
+Find out the IP's of your Aqua DB's which are exposing port 5432
 
 If your Aqua namespace is not called aqua, change as required.
 
@@ -94,18 +94,47 @@ If your Aqua namespace is not called aqua, change as required.
 ` # insert output from kubectl get svc -n aqua 
 
 
-
-
 ``` $ kubectl create -f postgresql-exporter/ ```
-Modify the 
+
 
 ### Exposing the Aqua Prometheus Endpoint
 
+You can query the data exposed via this endpoint using a standard http query, using your favourite browser, API client or curl/wget.
 
-You can query the data exposed via this endpoint using a standard http query, using yoru favourite browser, API client or wget.
+``` $ curl --location --request GET 'http://<AquaWeb-FQDN>:8080/metrics' --header 'Authorization: Bearer <AquaPrometheusToken>'```
 
-``` $ curl --location --request GET 'http://192.168.1.222:8080/metrics' --header 'Authorization: Bearer <AquaPrometheusToken>'```
+This should expose the data from the Aqua console
 
+<output>
 ### Using Postman
 
 <img src="Aqua-prometheus-endpoint-token.png">
+
+### Checking PostgeSQL exporter data 
+## Deploying Prometheus
+
+### Data Persistence
+### Prometheus Configuration
+
+Prometheus stores its config file in /etc/prometheus as prometheus.yml. We're going to be storing this file as a configMap to represent which will be mounted inside the Prometheus container at run time. 
+
+Our data exporters are defined in the config file as "Jobs" with target endpoints that get scraped.
+
+```
+      - job_name: 'Aqua'
+        bearer_token: '7acc84a52a4ee2754c450a8d9723ba71255d4456'
+
+        static_configs:
+          - targets: ['192.168.1.222:8080']
+
+      - job_name: 'postgres-aqua-db'
+        static_configs:
+          - targets: ['192.168.1.12:9187']
+
+      - job_name: 'postgres-aqua-audit-db'
+        static_configs:
+          - targets: ['192.168.1.12:9188']
+```
+## Deploying Grafana
+
+### Using the Aqua supplied Dashboard
