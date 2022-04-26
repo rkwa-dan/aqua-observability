@@ -72,22 +72,32 @@ Where you are using a AWS RDS Postgres or Microsoft Azure PostgreSQL server for 
 
 ### Docker
 
+You can deploy the exporter using Docker via the command below.
+
+- Modify the password string to the literal password used to connect to the Postgres DB used for Aquasec when Aqua was deployed. 
+- Where the DB is not hosted locally, modify that host to the FQDN/reachable IP of the DB instance.
+
+```docker run \```
+```--net=host \```
+```-e DATA_SOURCE_NAME="postgresql://postgres:password@localhost:5432/postgres?sslmode=disable" \ ```
+```quay.io/prometheuscommunity/postgres-exporter```
+
+
+### Kubernetes
+
 Find out our Aqua DB's which are exposing port 5432
 
 If your Aqua namespace is not called aqua, change as required.
 
 ```$ kubectl get svc -n aqua```
 
-# Connect to it
-docker run \
-  --net=host \
-  -e DATA_SOURCE_NAME="postgresql://postgres:password@localhost:5432/postgres?sslmode=disable" \
-  quay.io/prometheuscommunity/postgres-exporter
-### Kubernetes
+` # insert output from kubectl get svc -n aqua 
 
-# << Command yaml to deploy pods/containers >>
 
-``` $ kubectl create -f postgresql-exporter ```
+
+
+``` $ kubectl create -f postgresql-exporter/ ```
+Modify the 
 
 ### Exposing the Aqua Prometheus Endpoint
 
