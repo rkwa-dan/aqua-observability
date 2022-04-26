@@ -31,12 +31,20 @@ Think of this visually as a collection a dashboards which contain dials, graphs,
 
 ## What does this all look like in real terms? 
 
-For the benefit of illustration, here are some screen shots of the kinds of data which are being collected.
+Here are some screen shots of the kinds of data which are being collected & visualized.
 
-[Linux OS Node Exporter](<img src="./node-exporter-dashboard.png">)
+
+<br>
+
+Linux OS Node Exporter
+<img src="./node-exporter-dashboard.png" width="20%" height="20%">
+<br>
 Aqua Console
+<img src="./aqua-perf-dashboard.png" width="20%" height="20%">
+<br>
 PostgreSQL DB
-
+<img src="./postgresql-perf-dashboard.png" width="20%" height="20%">
+<br>
 ## What do I need to set this up?
 
 1. Access to a Kubernetes cluster (or Docker) and a namespace for  'monitoring' or 'observability' ( you can decide what to call this )
