@@ -89,3 +89,13 @@ docker run \
 
 ``` $ kubectl create -f postgresql-exporter ```
 
+### Exposing the Aqua Prometheus Endpoint
+
+
+You can query the data exposed via this endpoint using a standard http query, using yoru favourite browser, API client or wget.
+
+``` $ curl --location --request GET 'http://192.168.1.222:8080/metrics' --header 'Authorization: Bearer <AquaPrometheusToken>'```
+
+### Using Postman
+
+<img src="Aqua-prometheus-endpoint-token.png">
