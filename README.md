@@ -99,7 +99,9 @@ If your Aqua namespace is not called aqua, change as required.
 
 ### Exposing the Aqua Prometheus Endpoint
 
-You can query the data exposed via this endpoint using a standard http query, using your favourite browser, API client or curl/wget.
+Aqua Prom Endpoint : Console > integrations > Monitoring > Prometheus
+
+You can query the data exposed via this endpoint using a standard http query, using your favorite browser, API client or curl/wget.
 
 ``` $ curl --location --request GET 'http://<AquaWeb-FQDN>:8080/metrics' --header 'Authorization: Bearer <AquaPrometheusToken>'```
 
@@ -111,6 +113,16 @@ This should expose the data from the Aqua console
 <img src="Aqua-prometheus-endpoint-token.png">
 
 ### Checking PostgeSQL exporter data 
+
+To ensure that Prometheus will be able to collect the data from our exporters, you can use curl/wget/a browser to view the data being exposed from the exporter via http. 
+
+Example:
+```
+$ wget http://192.168.1.222:9100 
+``` 
+
+to pull the stats from the node exporter.
+<br>
 ## Deploying Prometheus
 
 ### Data Persistence
