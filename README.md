@@ -1,6 +1,6 @@
 # Aqua Observability
 
-A guide to monitoring an Aquasec deployment using observability tools such as Prometheus and Grafana 
+A guide to monitoring your Aquasec deployment using observability tools such as Prometheus and Grafana 
 
 ## Introduction
 
@@ -22,7 +22,7 @@ The Aquasec console can expose a Prometheus metrics endpoint which provides a nu
 
 Here's a schematic of the components and how they integrate with each other.
 
-<img src="./aqua-obs-2022-02-24-1540.png" alt_text="Aqua Prometheus & Grafana Observability">
+<img src="./images/aqua-obs-2022-02-24-1540.png" alt_text="Aqua Prometheus & Grafana Observability">
 <br>
 
 If you are not familiar with Prometheus and Grafana, it's basically a collection of monitoring tools that pulls real-time performance data from end-points (aka exporters) or hosts/clusters/applications, and stores this data over time, into a database. This data is made available for graphing tools to use - such as Grafana so that it can be visualized and the performance of these applications can be understood.
@@ -37,13 +37,13 @@ Here are some screen shots of the kinds of data which are being collected & visu
 <br>
 
 Linux OS Node Exporter
-<img src="./node-exporter-dashboard.png" width="20%" height="20%">
+<img src="./images/node-exporter-dashboard.png" width="20%" height="20%">
 <br>
 Aqua Console
-<img src="./aqua-perf-dashboard.png" width="20%" height="20%">
+<img src="./images/aqua-perf-dashboard.png" width="20%" height="20%">
 <br>
 PostgreSQL DB
-<img src="./postgresql-perf-dashboard.png" width="20%" height="20%">
+<img src="./images/postgresql-perf-dashboard.png" width="20%" height="20%">
 <br>
 ## What do I need to set this up?
 
@@ -56,7 +56,7 @@ In the deployment section, i have included the Kubernetes yaml files for everyth
 3. Prometheus node exporter which can be found [here](https://github.com/prometheus/node_exporter). 
 You should deploy this on the VM/hosts in your K8s cluster (if possible.) I deployed it onto my physical server which runs [microk8s](https://microk8s.io/). 
 
-4. The PostgreSQL DB exporter & access to the Aqua PostgreSQL - obtained from [Prometheus's GitHub](https://github.com/prometheus-community/postgres_exporter). Again, deployed into the namespace to connect to the K8s servicename or K8s ClusterIP/LoadBalancer IP's which expose the AquaDB (Scalock) and Aqua Audit DB(SLK_Audit)
+4. The PostgreSQL DB exporter & access to the Aqua PostgreSQL - obtained from [Prometheus's GitHub](https://github.com/prometheus-community/postgres_exporter). Again, deployed into the namespace to connect to the K8s Service name or K8s ClusterIP/LoadBalancer IP's which expose the AquaDB (Scalock) and Aqua Audit DB(SLK_Audit)
 5. The Aquasec Prometheus endpoint token and FQDN for the Aquasec Console. i.e. https://aquasec-console-dev.mydomain.com
 6. Patience and coffee :) 
 
@@ -110,7 +110,7 @@ This should expose the data from the Aqua console
 <output>
 ### Using Postman
 
-<img src="Aqua-prometheus-endpoint-token.png">
+<img src="./images/Aqua-prometheus-endpoint-token.png">
 
 ### Checking PostgeSQL exporter data 
 
