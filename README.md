@@ -4,8 +4,6 @@ A guide to monitoring your Aquasec deployment using observability tools such as 
 
 ## Introduction
 
-Use Case.
-
 You are a maintainer (DevSecOps/DevOps/SRE) of an Aquasec deployment on premises and you would like to better understand the resource usage of your deployment from the following components.
 
 - Underlying Host/VM utilization  - separate to any Cloud specific monitoring tools such as AWS Cloudwatch, GCP Stack Driver or Azure Monitor etc.
@@ -14,8 +12,8 @@ You are a maintainer (DevSecOps/DevOps/SRE) of an Aquasec deployment on premises
 - Aqua Gateway and Enforcers deployed.
 - Aqua Databases hosted on PostgresDB (containerized or Hosted) 
 - Image Scan statistics
-- Policies which are deployed
-- User session details
+- The number of different policies which are deployed
+- User login & session details
 ## How does it work ?
 
 The Aquasec console can expose a Prometheus metrics endpoint which provides a number of statistics which Prometheus can scrape. This in turn can be visualized by using a Grafana deployment and importing a number of graphs.
@@ -25,33 +23,38 @@ Here's a schematic of the components and how they integrate with each other.
 <img src="./images/aqua-obs-2022-02-24-1540.png" alt_text="Aqua Prometheus & Grafana Observability">
 <br>
 
-If you are not familiar with Prometheus and Grafana, it's basically a collection of monitoring tools that pulls real-time performance data from end-points (aka exporters) or hosts/clusters/applications, and stores this data over time, into a database. This data is made available for graphing tools to use - such as Grafana so that it can be visualized and the performance of these applications can be understood.
+If you are not familiar with Prometheus and Grafana, in short, it's basically a collection of monitoring tools that pulls real-time performance data from end-points (aka exporters) or hosts/clusters/applications, and stores this data over time, into a database. 
+
+This data is made available for graphing tools to use - such as Grafana so that it can be visualized and the performance of these applications can be understood.
 
 Think of this visually as a collection a dashboards which contain dials, graphs, stat & bar charts with data mapped to it for everything. 
-
+ 
+ *i* Disclaimer: by using the deployment files and configuration you do so at your own risk and no support is implied by the contributor. *i*
 ## What does this all look like in real terms? 
 
 Here are some screen shots of the kinds of data which are being collected & visualized.
-
-
 <br>
 
 Linux OS Node Exporter
-<img src="./images/node-exporter-dashboard.png" width="20%" height="20%">
+<br>
+<img src="./images/node-exporter-dashboard.png" width="30%" height="30%">
 <br>
 Aqua Console
-<img src="./images/aqua-perf-dashboard.png" width="20%" height="20%">
+<br>
+<img src="./images/aqua-perf-dashboard.png" width="30%" height="30%">
 <br>
 PostgreSQL DB
-<img src="./images/postgresql-perf-dashboard.png" width="20%" height="20%">
+<br>
+<img src="./images/postgresql-perf-dashboard.png" width="30%" height="30%">
 <br>
 ## What do I need to set this up?
 
-1. Access to a Kubernetes cluster (or Docker) and a namespace for  'monitoring' or 'observability' ( you can decide what to call this )
-2. A deployment of Prometheus and Grafana into the namespace above - I used a basic configuration from Bibin Wilson's tutorials [here](https://devopscube.com/setup-prometheus-monitoring-on-kubernetes/) & [Grafana](https://github.com/bibinwilson/kubernetes-grafana). This is the basis of my configuration - if you are familiar with these components you can modify them at as you need.
+1. Access to a Kubernetes cluster (or Docker) and a namespace for  'monitoring' or 'observability'. Using your own namespace name.
 
-To make the data persistent from Prometheus and Grafana you will need to create Persistent Volume Claims within your cluster.
-In the deployment section, i have included the Kubernetes yaml files for everything.
+2. A deployment of Prometheus and Grafana into the namespace mentioned above. 
+
+To make the data persistent for Prometheus and Grafana I have create Persistent Volume Claims within the deployments for Prometheus and Grafana.
+In the deployment section, that has been included the Kubernetes yaml files for everything.
 
 3. Prometheus node exporter which can be found [here](https://github.com/prometheus/node_exporter). 
 You should deploy this on the VM/hosts in your K8s cluster (if possible.) I deployed it onto my physical server which runs [microk8s](https://microk8s.io/). 
@@ -62,7 +65,9 @@ You should deploy this on the VM/hosts in your K8s cluster (if possible.) I depl
 
 # Deployment
 
+
 ## Prometheus Exporters
+
 Firstly we will setup the exporters and check that the data is available for Prometheus to 'scrape'.
 
 Deploy the Node Exporter (where possible) on your VM/Worker nodes, and the PostgreSQL exporter for each instance of AquaDB.
@@ -112,13 +117,21 @@ This should expose the data from the Aqua console
 
 <img src="./images/Aqua-prometheus-endpoint-token.png">
 
-### Checking PostgeSQL exporter data 
+### Checking Postgres SQL exporter data 
 
 To ensure that Prometheus will be able to collect the data from our exporters, you can use curl/wget/a browser to view the data being exposed from the exporter via http. 
 
 Example:
 ```
-$ wget http://192.168.1.222:9100 
+$ sh-3.2$ curl http://192.168.1.12:9187
+<html>
+	<head><title>Postgres exporter</title></head>
+	<body>
+	<h1>Postgres exporter</h1>
+	<p><a href='/metrics'>Metrics</a></p>
+	</body>
+	</html>
+	sh-3.2$ 
 ``` 
 
 to pull the stats from the node exporter.
