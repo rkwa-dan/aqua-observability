@@ -59,7 +59,7 @@ In the deployment section, that has been included the Kubernetes yaml files for 
 3. Prometheus node exporter which can be found [here](https://github.com/prometheus/node_exporter). 
 You should deploy this on the VM/hosts in your K8s cluster (if possible.) I deployed it onto my physical server which runs [microk8s](https://microk8s.io/). 
 
-4. The PostgreSQL DB exporter & access to the Aqua PostgreSQL - obtained from [Prometheus's GitHub](https://github.com/prometheus-community/postgres_exporter). Again, deployed into the namespace to connect to the K8s Service name or K8s ClusterIP/LoadBalancer IP's which expose the AquaDB (Scalock) and Aqua Audit DB(SLK_Audit)
+4. The PostgreSQL DB exporter & access to the Aqua PostgreSQL DB - obtained from [Prometheus's GitHub](https://github.com/prometheus-community/postgres_exporter). Again, deployed into the namespace to connect to the K8s Service name or K8s ClusterIP/LoadBalancer IP's which expose the AquaDB (Scalock) and Aqua Audit DB(SLK_Audit)
 5. The Aquasec Prometheus endpoint token and FQDN for the Aquasec Console. i.e. https://aquasec-console-dev.mydomain.com
 6. Patience and coffee :) 
 
@@ -130,8 +130,7 @@ $ sh-3.2$ curl http://192.168.1.12:9187
 	<h1>Postgres exporter</h1>
 	<p><a href='/metrics'>Metrics</a></p>
 	</body>
-	</html>
-	sh-3.2$ 
+</html>
 ``` 
 
 to pull the stats from the node exporter.
@@ -163,3 +162,9 @@ Our data exporters are defined in the config file as "Jobs" with target endpoint
 ## Deploying Grafana
 
 ### Using the Aqua supplied Dashboard
+
+Within the grafana directory, there is an Aquasec dashboard configuration file which we will use to deploy the Aqua Dashboard.
+
+The default dashboard is a yaml file, it's been modified since as I preferred the aesthetics of some of the tiled views for the data that's displayed from Prometheus.
+
+### Further sections are work in progress
