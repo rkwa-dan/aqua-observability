@@ -130,8 +130,7 @@ $ sh-3.2$ curl http://192.168.1.12:9187
 	<h1>Postgres exporter</h1>
 	<p><a href='/metrics'>Metrics</a></p>
 	</body>
-	</html>
-	sh-3.2$ 
+</html>
 ``` 
 
 to pull the stats from the node exporter.
