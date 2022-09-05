@@ -49,7 +49,7 @@ PostgreSQL DB
 <br>
 ## What do I need to set this up?
 
-1. Access to a Kubernetes cluster (or Docker) and a namespace for  'monitoring' or 'observability'. Using your own namespace name.
+1. Access to a Kubernetes cluster (or Docker) and a namespace for  'monitoring' or 'observability'. Using your own namespace name is possible also. Be sure to modify the deployment yaml where relevant.
 
 2. A deployment of Prometheus and Grafana into the namespace mentioned above. 
 
