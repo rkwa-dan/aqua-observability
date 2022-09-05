@@ -94,13 +94,13 @@ You can deploy the exporter using Docker via the command below.
 ```quay.io/prometheuscommunity/postgres-exporter```
 
 SSL mode can be modified if you're db uses Mutual TLS.  The exporter provides parameters that support this. 
-### Kubernetes
+## Kubernetes
+### Postgres DB exporter Deployment
+Find out the Service name of your Aqua DB's which are exposing port 5432 from Postgres so that the connection from the PG exporters will connect.
 
-Find out the IP's of your Aqua DB's which are exposing port 5432 from Postgres so that the connection from the PG exporters will connect.
+_If your Aqua namespace is not called aqua, you can change as required._
 
-If your Aqua namespace is not called aqua, change as required.
-
-```$ kubectl get svc -n aqua```
+``$ kubectl get svc -n aqua```
 
 ` # insert output from kubectl get svc -n aqua 
 
