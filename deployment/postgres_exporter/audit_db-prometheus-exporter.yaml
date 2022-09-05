@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: audit-db-postgres-exporter
+  name: audit-db-prom-exporter-endpoint
+  # Change namespace where appropriate.
+  namespace: monitoring
+spec:
+  ports:
+  - port: 9188
+    protocol: TCP
+    targetPort: 9187
+  selector:
+    app: audit-db-postgres-exporter
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: audit-db-postgres-exporter
+  # Change namespace where appropriate.
+  namespace: monitoring
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: audit-db-postgres-exporter
+  template:
+    metadata:
+      labels:
+        app: audit-db-postgres-exporter
+    spec:
+      containers:
+      - env:
+        - name: AQUA_AUDIT_DB_USERNAME
+          value: postgres
+        - name: AQUA_AUDIT_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: audit-db-secret
+              optional: false     
+        - name: DATA_SOURCE_NAME
+          # Substitute the value IP/SVC name for your Aqua DB using internal fqdn/k8s svc name, e.g. aqua-db.aqua.svc.cluster.local
+          value: postgresql://$(AQUA_AUDIT_DB_USERNAME):$(AQUA_AUDIT_DB_PASSWORD)@192.168.1.233:5432/postgres?sslmode=disable
+        image: quay.io/prometheuscommunity/postgres-exporter
+        imagePullPolicy: IfNotPresent
+        name: aqua-db-postgres-exporter
+        ports:
+        - containerPort: 9187
+      hostNetwork: false

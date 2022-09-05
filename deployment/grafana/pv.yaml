@@ -1,0 +1,13 @@
+# Create a PVC for grafana config
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-storage-vol
+  namespace: monitoring
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10G
+

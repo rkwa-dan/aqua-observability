@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-configmap
+  # Change namespace where appropriate.
+  namespace: monitoring
+data:
+  
+  # AQUA DB database source names - You need to expose the Aqua DB instances to appropriate values.
+  # used in the prometheus Postgres exporter config
+  AQUA_DB_USERNAME: "postgres"
+  AQUA_AUDIT_DB_USERNAME: "postgres"
