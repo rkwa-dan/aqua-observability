@@ -57,30 +57,30 @@ To make the data persistent for Prometheus and Grafana I have create Persistent 
 In the deployment section, that has been included the Kubernetes yaml files for everything.
 
 3. Prometheus node exporter which can be found [here](https://github.com/prometheus/node_exporter). 
-
 You should deploy this on the VM/hosts in your K8s cluster (if possible). 
-
-## What kubernetes platforms have I tested this against
-This stack has been developed and deployed it onto a physical server which runs [microk8s](https://microk8s.io/). 
-
-
 
 4. The PostgreSQL DB exporter & access to the Aqua PostgreSQL DB - obtained from [Prometheus's GitHub](https://github.com/prometheus-community/postgres_exporter). Again, deployed into the namespace to connect to the K8s Service name or K8s ClusterIP/LoadBalancer IP's which expose the AquaDB (Scalock) and Aqua Audit DB(SLK_Audit)
 5. The Aquasec Prometheus endpoint token and FQDN for the Aquasec Console. i.e. https://aquasec-console-dev.mydomain.com
 6. Patience and coffee :) 
 
 # Deployment
+## What kubernetes platforms have I tested this against
+This stack has been developed and deployed it onto a physical server which runs [microk8s](https://microk8s.io/). 
 
+| Kubernetes Platform |                 | AKS | EKS | GKE | Native K8s | MicroK8s | Minikube |   |   |   |
+|:-------------------:|:---------------:|:---:|:---:|:---:|:----------:|:--------:|:--------:|:---:|:---:|:---:|
+| Checked against     |  | -   | -   | -   | -          | Yes      | -        |   |   |   |
+|                     |                 |     |     |     |            |          |          |   |   |   |
 
 ## Prometheus Exporters
 
-Firstly we will setup the exporters and check that the data is available for Prometheus to 'scrape'.
+Firstly we will setup the exporters and check that the data is available for Prometheus to 'scrape' from.
 
 Deploy the Node Exporter (where possible) on your VM/Worker nodes, and the PostgreSQL exporter for each instance of AquaDB.
 
-Where you are using a AWS RDS Postgres or Microsoft Azure PostgreSQL server for both Aqua DB's, you only need to deploy one PosgreSQL exporter.  
+Where you are using a AWS RDS Postgres or Microsoft Azure PostgreSQL server for both Aqua DB's, you only need to deploy one PosgresQL exporter.  
 
-
+If you're using the Aqua Advanced Deployment Architecture and are using the containerised deployment of Databases, you can deploy two of the Postgres exporters as illustrated in the diagram.
 ### Docker
 
 You can deploy the exporter using Docker via the command below.
