@@ -105,6 +105,12 @@ _If your Aqua namespace is not called aqua, you can change as required._
 `# insert output from kubectl get svc -n aqua `
 
 The postgres-exporter deployments for Aqua-db(scalock) and Audit-db (slk_audit) contains the connection string which will initiate polling for the DB instances.
+
+Line 48 in both aqua-db / audit-db yamls :
+
+`          value: postgresql://$(AQUA_DB_USERNAME):$(AQUA_DB_PASSWORD)@192.168.1.226:5432/postgres?sslmode=disable`
+Substitute `192.168.1.222` with the FQDN for each Aqua DB respectively.
+
 **Note** : you can test this by requesting the  `/metrics` uri from each exporter.
 
 `$ wget http://<aqua-db-exporter-service-name:8197/metrics> 1>&2`
