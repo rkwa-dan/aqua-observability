@@ -107,19 +107,21 @@ _If your Aqua namespace is not called aqua, you can change as required._
 The postgres-exporter deployments for Aqua-db(scalock) and Audit-db (slk_audit) contains the connection string which will initiate polling for the DB instances.
 **Note** : you can test this by requesting the  `/metrics` uri from each exporter.
 
-` $ wget http://<aqua-db-exporter-service-name:8197/metrics> 1>&2`
+`$ wget http://<aqua-db-exporter-service-name:8197/metrics> 1>&2`
 
 This will show the following from the pod log
 
-** Start up **
-`ts=2022-09-05T10:07:27.709Z caller=main.go:123 level=info msg="Listening on address" address=:9187`
+**Start up**
+
+``ts=2022-09-05T10:07:27.709Z caller=main.go:123 level=info msg="Listening on address" address=:9187``<br>
 `ts=2022-09-05T10:07:27.709Z caller=tls_config.go:195 level=info msg="TLS is disabled." http2=false`
 
-** When the wget hits the exporter **
-`ts=2022-09-05T10:09:00.122Z caller=server.go:74 level=info msg="Established new database connection" fingerprint=192.168.1.226:5432`
+**When the wget hits the exporter**
+
+`ts=2022-09-05T10:09:00.122Z caller=server.go:74 level=info msg="Established new database connection" fingerprint=192.168.1.226:5432`<br>
 `ts=2022-09-05T10:09:00.150Z caller=postgres_exporter.go:662 level=info msg="Semantic version changed" server=192.168.1.226:5432 from=0.0.0 to=11.16.0`
 
-As you can see the last two lines shows the connection to the DB as a consequence of the wget. This mimics what prometheus will do when it polls each exporter to collect stats. 
+As you can see the last two lines shows the connection to the DB as a consequence of the wget. This mimics what prometheus will do when it polls each exporter to collect stats and confirms connectivity.
 
 Edit 
 ` $ kubectl create -f postgresql-exporter/ `
