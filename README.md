@@ -49,7 +49,7 @@ PostgreSQL DB
 <br>
 ## What do I need to set this up?
 
-1. Access to a Kubernetes cluster (or Docker) and a namespace for  'monitoring' or 'observability'. Using your own namespace name.
+1. Access to a Kubernetes cluster (or Docker) and a namespace for  'monitoring' or 'observability'. Using your own namespace name is possible also. Be sure to modify the deployment yaml where relevant.
 
 2. A deployment of Prometheus and Grafana into the namespace mentioned above. 
 
@@ -57,7 +57,13 @@ To make the data persistent for Prometheus and Grafana I have create Persistent 
 In the deployment section, that has been included the Kubernetes yaml files for everything.
 
 3. Prometheus node exporter which can be found [here](https://github.com/prometheus/node_exporter). 
-You should deploy this on the VM/hosts in your K8s cluster (if possible.) I deployed it onto my physical server which runs [microk8s](https://microk8s.io/). 
+
+You should deploy this on the VM/hosts in your K8s cluster (if possible). 
+
+## What kubernetes platforms have I tested this against
+This stack has been developed and deployed it onto a physical server which runs [microk8s](https://microk8s.io/). 
+
+
 
 4. The PostgreSQL DB exporter & access to the Aqua PostgreSQL DB - obtained from [Prometheus's GitHub](https://github.com/prometheus-community/postgres_exporter). Again, deployed into the namespace to connect to the K8s Service name or K8s ClusterIP/LoadBalancer IP's which expose the AquaDB (Scalock) and Aqua Audit DB(SLK_Audit)
 5. The Aquasec Prometheus endpoint token and FQDN for the Aquasec Console. i.e. https://aquasec-console-dev.mydomain.com
