@@ -1,0 +1,12 @@
+# Create a PVC for prometheus config
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-config-volume
+  namespace: monitoring
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500m
