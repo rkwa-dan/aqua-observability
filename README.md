@@ -32,6 +32,15 @@ Think of this visually as a collection a dashboards which contain dials, graphs,
  *i* Disclaimer: by using the deployment files and configuration you do so at your own risk and no support is implied by the contributor. *i*
 ## What does this all look like in real terms? 
 
+We can collect the performance data from each of the components operating in the Aqua deployment, based on the following:
+- Host / Worker Node CPU, RAM, Disk and Network I/O
+- Database resource usage - RAM, CPU, queries and IOPs
+- Kubernetes pod usage
+- Aqua Console, Gateway and Enforcer statistics
+- Being able to identify issues and service/host outages at a glance.
+
+This data can be used and graphed to provide insight of current and historical data metrics though the use of Prometheus, the available exporters and Grafana to provide the dashboard and visual metrics for DevOps and SRE teams managing several Aquasec deployments.
+
 Here are some screen shots of the kinds of data which are being collected & visualized.
 <br>
 
@@ -57,30 +66,30 @@ To make the data persistent for Prometheus and Grafana I have create Persistent 
 In the deployment section, that has been included the Kubernetes yaml files for everything.
 
 3. Prometheus node exporter which can be found [here](https://github.com/prometheus/node_exporter). 
-
 You should deploy this on the VM/hosts in your K8s cluster (if possible). 
-
-## What kubernetes platforms have I tested this against
-This stack has been developed and deployed it onto a physical server which runs [microk8s](https://microk8s.io/). 
-
-
 
 4. The PostgreSQL DB exporter & access to the Aqua PostgreSQL DB - obtained from [Prometheus's GitHub](https://github.com/prometheus-community/postgres_exporter). Again, deployed into the namespace to connect to the K8s Service name or K8s ClusterIP/LoadBalancer IP's which expose the AquaDB (Scalock) and Aqua Audit DB(SLK_Audit)
 5. The Aquasec Prometheus endpoint token and FQDN for the Aquasec Console. i.e. https://aquasec-console-dev.mydomain.com
 6. Patience and coffee :) 
 
 # Deployment
+## What kubernetes platforms have I tested this against
+This stack has been developed and deployed it onto a physical server which runs [microk8s](https://microk8s.io/). 
 
+| Kubernetes Platform |                 | AKS | EKS | GKE | Native K8s | MicroK8s | Minikube |   |   |   |
+|:-------------------:|:---------------:|:---:|:---:|:---:|:----------:|:--------:|:--------:|:---:|:---:|:---:|
+| Checked against     |  | -   | -   | -   | -          | Yes      | -        |   |   |   |
+|                     |                 |     |     |     |            |          |          |   |   |   |
 
 ## Prometheus Exporters
 
-Firstly we will setup the exporters and check that the data is available for Prometheus to 'scrape'.
+Firstly we will setup the exporters and check that the data is available for Prometheus to 'scrape' from.
 
-Deploy the Node Exporter (where possible) on your VM/Worker nodes, and the PostgreSQL exporter for each instance of AquaDB.
+Deploy a PostgreSQL exporter Prometheus instance for each instance of Aqua databases (Scalock and SLK Audit)
 
-Where you are using a AWS RDS Postgres or Microsoft Azure PostgreSQL server for both Aqua DB's, you only need to deploy one PosgreSQL exporter.  
+Where you are using a AWS RDS Postgres or Microsoft Azure PostgreSQL server for both Aqua DB's, you only need to deploy one Posgres SQL exporter.  
 
-
+If you're using the Aqua Advanced Deployment Architecture and are using the containerised deployment of Databases, you can deploy two of the Postgres exporters as illustrated in the diagram.
 ### Docker
 
 You can deploy the exporter using Docker via the command below.
@@ -93,19 +102,46 @@ You can deploy the exporter using Docker via the command below.
 ```-e DATA_SOURCE_NAME="postgresql://postgres:<YourPG_DB_password>@<AquaDbFQDN>:5432/postgres?sslmode=disable" \ ```
 ```quay.io/prometheuscommunity/postgres-exporter```
 
-SSL mode can be modified if you're db uses Mutual TLS.  The exporter provides parameters that support this 
-### Kubernetes
+SSL mode can be modified if you're db uses Mutual TLS.  The exporter provides [parameters](https://github.com/prometheus-community/postgres_exporter#flags) that support this.  
+## Kubernetes
+###  Deployment
+Find out the Service name of your Aqua DB's which are exposing port 5432 from Postgres so that the connection from the PG exporters will connect.
 
-Find out the IP's of your Aqua DB's which are exposing port 5432
+_If your Aqua namespace is not called aqua, you can change as required._
 
-If your Aqua namespace is not called aqua, change as required.
+`$ kubectl get svc -n aqua`
 
-```$ kubectl get svc -n aqua```
+Insert output from `kubectl get svc -n aqua`
 
-` # insert output from kubectl get svc -n aqua 
+The postgres-exporter deployment files `aqua_db_prometheus_exporter.yaml` & `audit_db-prometheus-exporter.yaml` for Aqua-db(scalock) and Audit-db (slk_audit) contains the connection string which will initiate polling for the DB instances as shown in line 48 in both aqua-db / audit-db yamls :
+
+`          value: postgresql://$(AQUA_DB_USERNAME):$(AQUA_DB_PASSWORD)@192.168.1.226:5432/postgres?sslmode=disable`
+<br>
+
+Substitute `192.168.1.222` with the FQDN for each Aqua DB respectively.
+
+Deploying the exporters :
+
+Run the command ` $ kubectl create -f postgresql-exporter/ `
 
 
-``` $ kubectl create -f postgresql-exporter/ ```
+**Note** : Once the exporter is deployed you can test the connection to it by requesting the  `/metrics` uri from each exporter using the command:
+
+`$ curl --location --request GET 'http://192.168.1.231:9187/metrics' `
+
+This can be seen in the logs of each pod
+
+**Start up**
+
+``ts=2022-09-05T10:07:27.709Z caller=main.go:123 level=info msg="Listening on address" address=:9187``<br>
+`ts=2022-09-05T10:07:27.709Z caller=tls_config.go:195 level=info msg="TLS is disabled." http2=false`
+
+**When the wget hits the exporter**
+
+`ts=2022-09-05T10:09:00.122Z caller=server.go:74 level=info msg="Established new database connection" fingerprint=192.168.1.226:5432`<br>
+`ts=2022-09-05T10:09:00.150Z caller=postgres_exporter.go:662 level=info msg="Semantic version changed" server=192.168.1.226:5432 from=0.0.0 to=11.16.0`
+
+As you can see the last two lines shows the connection to the DB as a consequence of the wget. This mimics what prometheus will do when it polls each exporter to collect stats and confirms connectivity.
 
 
 ### Exposing the Aqua Prometheus Endpoint
