@@ -111,18 +111,16 @@ _If your Aqua namespace is not called aqua, you can change as required._
 
 `$ kubectl get svc -n aqua`
 
-`# insert output from kubectl get svc -n aqua `
+Insert output from `kubectl get svc -n aqua`
 
-The postgres-exporter deployments for Aqua-db(scalock) and Audit-db (slk_audit) contains the connection string which will initiate polling for the DB instances.
-
-Line 48 in both aqua-db / audit-db yamls :
+The postgres-exporter deployment files `aqua_db_prometheus_exporter.yaml` & `audit_db-prometheus-exporter.yaml` for Aqua-db(scalock) and Audit-db (slk_audit) contains the connection string which will initiate polling for the DB instances as shown in line 48 in both aqua-db / audit-db yamls :
 
 `          value: postgresql://$(AQUA_DB_USERNAME):$(AQUA_DB_PASSWORD)@192.168.1.226:5432/postgres?sslmode=disable`
 <br>
 
 Substitute `192.168.1.222` with the FQDN for each Aqua DB respectively.
 
-**Note** : you can test this by requesting the  `/metrics` uri from each exporter.
+**Note** : Once the exporter is deployed you can test the connection to it by requesting the  `/metrics` uri from each exporter using the command:
 
 `$ wget http://<aqua-db-exporter-service-name:8197/metrics> 1>&2`
 
@@ -140,7 +138,6 @@ This will show the following from the pod log
 
 As you can see the last two lines shows the connection to the DB as a consequence of the wget. This mimics what prometheus will do when it polls each exporter to collect stats and confirms connectivity.
 
-Edit 
 ` $ kubectl create -f postgresql-exporter/ `
 
 
