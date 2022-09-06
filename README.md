@@ -76,9 +76,9 @@ This stack has been developed and deployed it onto a physical server which runs 
 
 Firstly we will setup the exporters and check that the data is available for Prometheus to 'scrape' from.
 
-Deploy the Node Exporter (where possible) on your VM/Worker nodes, and the PostgreSQL exporter for each instance of AquaDB.
+Deploy a PostgreSQL exporter Prometheus instance for each instance of Aqua databases (Scalock and SLK Audit)
 
-Where you are using a AWS RDS Postgres or Microsoft Azure PostgreSQL server for both Aqua DB's, you only need to deploy one PosgresQL exporter.  
+Where you are using a AWS RDS Postgres or Microsoft Azure PostgreSQL server for both Aqua DB's, you only need to deploy one Posgres SQL exporter.  
 
 If you're using the Aqua Advanced Deployment Architecture and are using the containerised deployment of Databases, you can deploy two of the Postgres exporters as illustrated in the diagram.
 ### Docker
@@ -93,9 +93,9 @@ You can deploy the exporter using Docker via the command below.
 ```-e DATA_SOURCE_NAME="postgresql://postgres:<YourPG_DB_password>@<AquaDbFQDN>:5432/postgres?sslmode=disable" \ ```
 ```quay.io/prometheuscommunity/postgres-exporter```
 
-SSL mode can be modified if you're db uses Mutual TLS.  The exporter provides parameters that support this. 
+SSL mode can be modified if you're db uses Mutual TLS.  The exporter provides [parameters](https://github.com/prometheus-community/postgres_exporter#flags) that support this.  
 ## Kubernetes
-### Postgres DB exporter Deployment
+###  Deployment
 Find out the Service name of your Aqua DB's which are exposing port 5432 from Postgres so that the connection from the PG exporters will connect.
 
 _If your Aqua namespace is not called aqua, you can change as required._
@@ -109,6 +109,8 @@ The postgres-exporter deployments for Aqua-db(scalock) and Audit-db (slk_audit) 
 Line 48 in both aqua-db / audit-db yamls :
 
 `          value: postgresql://$(AQUA_DB_USERNAME):$(AQUA_DB_PASSWORD)@192.168.1.226:5432/postgres?sslmode=disable`
+<br>
+
 Substitute `192.168.1.222` with the FQDN for each Aqua DB respectively.
 
 **Note** : you can test this by requesting the  `/metrics` uri from each exporter.
