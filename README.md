@@ -120,9 +120,14 @@ The postgres-exporter deployment files `aqua_db_prometheus_exporter.yaml` & `aud
 
 Substitute `192.168.1.222` with the FQDN for each Aqua DB respectively.
 
+Deploying the exporters :
+
+Run the command ` $ kubectl create -f postgresql-exporter/ `
+
+
 **Note** : Once the exporter is deployed you can test the connection to it by requesting the  `/metrics` uri from each exporter using the command:
 
-`$ wget http://<aqua-db-exporter-service-name:8197/metrics> 1>&2`
+`$ curl --location --request GET 'http://192.168.1.231:9187/metrics' `
 
 This can be seen in the logs of each pod
 
@@ -137,10 +142,6 @@ This can be seen in the logs of each pod
 `ts=2022-09-05T10:09:00.150Z caller=postgres_exporter.go:662 level=info msg="Semantic version changed" server=192.168.1.226:5432 from=0.0.0 to=11.16.0`
 
 As you can see the last two lines shows the connection to the DB as a consequence of the wget. This mimics what prometheus will do when it polls each exporter to collect stats and confirms connectivity.
-
-` $ kubectl create -f postgresql-exporter/ `
-
-
 
 
 ### Exposing the Aqua Prometheus Endpoint
