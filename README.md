@@ -34,8 +34,9 @@ Think of this visually as a collection a dashboards which contain dials, graphs,
 
 We can collect the performance data from each of the components operating in the Aqua deployment, based on the following:
 - Host / Worker Node CPU, RAM, Disk and Network I/O
-- Database resource utilisation - RAM, CPU, queries and IOPs
-- Kubernetes pod utilisation
+- Database resource usage - RAM, CPU, queries and IOPs
+- Kubernetes pod usage
+- Aqua Console, Gateway and Enforcer statistics
 
 Here are some screen shots of the kinds of data which are being collected & visualized.
 <br>
