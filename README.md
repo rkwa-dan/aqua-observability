@@ -37,6 +37,9 @@ We can collect the performance data from each of the components operating in the
 - Database resource usage - RAM, CPU, queries and IOPs
 - Kubernetes pod usage
 - Aqua Console, Gateway and Enforcer statistics
+- Being able to identify issues and service/host outages at a glance.
+
+This data can be used and graphed to provide insight of current and historical data metrics though the use of Prometheus, the available exporters and Grafana to provide the dashboard and visual metrics for DevOps and SRE teams managing several Aquasec deployments.
 
 Here are some screen shots of the kinds of data which are being collected & visualized.
 <br>
