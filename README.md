@@ -124,7 +124,7 @@ Substitute `192.168.1.222` with the FQDN for each Aqua DB respectively.
 
 `$ wget http://<aqua-db-exporter-service-name:8197/metrics> 1>&2`
 
-This will show the following from the pod log
+This can be seen in the logs of each pod
 
 **Start up**
 
